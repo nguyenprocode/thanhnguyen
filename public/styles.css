@@ -1,0 +1,175 @@
+/*!
+ * styles.css
+ * Copyright © 2025 Bùi Thanh Nguyên
+ * All rights reserved.
+ * Website: [nếu có thể thêm sau này]
+ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f7f9fb;
+  color: #444;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow: hidden;
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: 640px;
+  background-color: #ffffff;
+  padding: 24px 28px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+/* Textarea */
+textarea {
+  flex: 1;
+  width: 100%;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: 400;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  resize: none;
+  margin-bottom: 16px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+  background-color: #fcfcfc;
+  color: #333;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #bbb;
+  box-shadow: none;
+}
+
+/* Button */
+button {
+  padding: 10px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  background-color: #5c9ded;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  align-self: flex-start;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  margin-bottom: 10px;
+}
+
+button:hover {
+  background-color: #4a8cda;
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Result Paragraph */
+#result {
+  word-break: break-word;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #5c9ded;
+}
+
+/* Link inside #result */
+#result a {
+  color: #4a8cda;
+  text-decoration: none;
+  font-weight: 400;
+}
+
+#result a:hover {
+  text-decoration: underline;
+  color: #397cc3;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  body {
+    padding: 15px;
+  }
+
+  .container {
+    padding: 20px;
+  }
+
+  textarea {
+    font-size: 0.95rem;
+  }
+
+  button {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #1e1e1e;
+    color: #dcdcdc;
+  }
+
+  .container {
+    background-color: #2a2a2a;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  textarea {
+    background-color: #1f1f1f;
+    color: #e0e0e0;
+    border-color: #555;
+  }
+
+  textarea:focus {
+    outline: none;
+    border-color: #666;
+    box-shadow: none;
+  }
+
+  button {
+    background-color: #3c94ff;
+    color: #fff;
+  }
+
+  button:hover {
+    background-color: 3c94ff;
+  }
+
+  #result {
+    color: #8495ac;
+  }
+
+  #result a {
+    color: #8495ac;
+  }
+
+  #result a:hover {
+    color: #91c0ff;
+  }
+}

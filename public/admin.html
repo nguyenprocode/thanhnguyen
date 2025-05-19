@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thanh Nguyên - Admin Panel</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Admin Panel</h1>
+    <div id="authSection">
+      <h3>Password</h3>
+      <input type="password" id="adminPassword" placeholder="Password Admin">
+      <button onclick="authenticateAdmin()">Xác thực</button>
+      <p id="authResult"></p>
+    </div>
+    <div id="linksSection" style="display:none">
+      <h2>Raw Link List</h2>
+      <table id="linksTable">
+        <thead>
+          <tr>
+            <th>Link</th>
+            <th>Content</th>
+            <th>Creation date</th>
+            <th>Time to create</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="linksBody"></tbody>
+      </table>
+      <button onclick="window.location.href='index.html'">Home</button>
+    </div>
+  </div>
+  <script>
+    async function authenticateAdmin() {
+      const password = document.getElementById('adminPassword').value;
+      if (!password) {
+        document.getElementById('authResult').textContent = 'Please enter password!';
+        return;
+      }
+
+      try {
+        const response = await fetch('/admin-auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password })
+        });
+        const data = await response.json();
+
+        if (data.token) {
+          localStorage.setItem('adminToken', data.token);
+          document.getElementById('authSection').style.display = 'none';
+          document.getElementById('linksSection').style.display = 'block';
+          loadAdminLinks();
+        } else {
+          document.getElementById('authResult').textContent = data.error;
+        }
+      } catch (err) {
+        document.getElementById('authResult').textContent = 'Lỗi khi xác thực!';
+      }
+    }
+
+    async function loadAdminLinks() {
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        document.getElementById('authResult').textContent = 'Please verify again!';
+        document.getElementById('authSection').style.display = 'block';
+        document.getElementById('linksSection').style.display = 'none';
+        return;
+      }
+
+      try {
+        const response = await fetch('/admin-links', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const links = await response.json();
+
+        const tbody = document.getElementById('linksBody');
+        tbody.innerHTML = '';
+
+        links.forEach(link => {
+          const date = new Date(link.createdAt);
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td><a href="${link.link}" target="_blank">${link.link}</a></td>
+            <td>${link.content.substring(0, 50)}${link.content.length > 50 ? '...' : ''}</td>
+            <td>${date.toLocaleDateString('vi-VN')}</td>
+            <td>${date.toLocaleTimeString('vi-VN')}</td>
+            <td><button class="delete-btn" onclick="deleteLink('${link.id}')">Remove</button></td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (err) {
+        document.getElementById('authResult').textContent = 'Lỗi khi tải danh sách!';
+        document.getElementById('authSection').style.display = 'block';
+        document.getElementById('linksSection').style.display = 'none';
+      }
+    }
+
+    async function deleteLink(id) {
+      if (!confirm('Bạn có chắc muốn xóa link này?')) return;
+
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        document.getElementById('authResult').textContent = 'Vui lòng xác thực lại!';
+        document.getElementById('authSection').style.display = 'block';
+        document.getElementById('linksSection').style.display = 'none';
+        return;
+      }
+
+      try {
+        const response = await fetch(`/admin-links/${id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await response.json();
+
+        if (data.message) {
+          alert('Xóa link thành công!');
+          loadAdminLinks(); // Tải lại danh sách
+        } else {
+          alert(data.error);
+        }
+      } catch (err) {
+        alert('Lỗi khi xóa link!');
+      }
+    }
+
+    // Kiểm tra token khi tải trang
+    window.onload = () => {
+      if (localStorage.getItem('adminToken')) {
+        document.getElementById('authSection').style.display = 'none';
+        document.getElementById('linksSection').style.display = 'block';
+        loadAdminLinks();
+      }
+    };
+  </script>
+</body>
+</html>
